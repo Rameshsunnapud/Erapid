@@ -1,0 +1,84 @@
+ TD {
+	font-family : Verdana, Arial, sans-serif ;
+	font-size :6pt;	
+	text-transform : uppercase;
+   }
+
+   
+ .box {
+	  border-right: black 1px solid;
+ 	  border-top: black 1px solid;
+	  border-left: black 1px solid;
+	  border-bottom: black 1px solid;  
+		}
+ .boxlr {
+ 	  border-top: black 1px solid;
+	  border-bottom: black 1px solid;  
+		}
+		
+ .boxltr {
+	  border-bottom: black 1px solid;  
+		}
+
+ .boxltb {
+	border-right: black 1px solid;
+	border-collapse : collapse;
+}
+		
+ .boxrb {
+ 	  border-top: black 1px solid;
+	  border-left: black 1px solid;
+		}
+
+
+ .boxl {
+	  border-right: black 1px solid;
+ 	  border-top: black 1px solid;
+	  border-bottom: black 1px solid;  
+		}
+ .boxlt {
+	  border-right: black 1px solid;
+	  border-bottom: black 1px solid;  
+		}
+		
+ .boxltc {
+	  border-right: black 1px solid;
+	  border-bottom: black 1px solid;  
+	  text-transform : capitalize;
+		}
+		
+ .boxt {
+	  border-right: black 1px solid; 	  
+	  border-left: black 1px solid;
+	  border-bottom: black 1px solid;  
+		}
+ .boxrt {
+	  border-left: black 1px solid;
+	  border-bottom: black 1px solid;  
+		}
+ .boxr {
+ 	  border-top: black 1px solid;
+	  border-left: black 1px solid;
+	  border-bottom: black 1px solid;  
+		}
+
+	.test	{
+	border-collapse : collapse;
+	}
+.test1{
+	border-collapse : collapse;
+	background: white;
+	border: 1px solid black;	
+}
+.pbreaker{
+	page-break-after : always;
+}
+.p1breaker{
+	page-break-before : always;
+}
+
+ .boxlb {
+	  border-right: black 1px solid;
+ 	  border-top: black 1px solid;
+	 }
+

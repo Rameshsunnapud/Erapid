@@ -1,0 +1,49 @@
+.rowHighlight{
+    background-color:yellow;
+}
+
+.inputEdit{
+    width:100%;
+    resize: none;
+    
+}
+.longCol {
+    width:300px !important;
+}
+#addRecordSection{
+    border:1px solid #CCC;
+    padding:5px;
+    margin-bottom:5px;
+}
+
+.newRowFaded{
+    background-color:white;
+    -webkit-animation: backgroundShift 6s; /* Chrome, Safari, Opera */
+    animation: backgroundShift 6s;
+}
+
+@-webkit-keyframes backgroundShift {
+    40% {background-color: green;}
+    100% {background-color: white;}
+}
+
+/* Standard syntax */
+@keyframes backgroundShift {
+    40% {background-color: green;}
+    100% {background-color: white;}
+}
+
+span.addRecord{
+    display: inline-block;
+    width:100px;
+    margin-right:15px;
+}
+
+.columnInsert{
+    width:125px;
+    margin-right:10px;
+}
+
+tfoot {
+    display: table-header-group;
+}

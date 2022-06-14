@@ -1,0 +1,4 @@
+UPDATE ::A00002_00::order no 184154::bpcs order no20150820:: bpcs order dateWON:: bpcs status 
+UPDATE ::A00000_00::order no 183942::bpcs order no20150820:: bpcs order dateWON:: bpcs status 
+UPDATE ::A00002_00::order no 184154::bpcs order no20150820:: bpcs order dateWON:: bpcs status 
+BPCS Total::390::SFDC updated::3::Erapid Exception::0::20150820

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><erapid>
+	<instance>
+		<serverName>localhost</serverName>
+		<fullServerName>http://localhost</fullServerName>
+		<cpqServerName>https://cpqdev.c-sgroup.com</cpqServerName>
+		<dbServerName>sec-cpqdbdev</dbServerName>
+		<dbServerPort>1435</dbServerPort> 
+		<erapidDB>csedev</erapidDB>
+		<erapidSysDB>csedevsys</erapidSysDB>
+		<erapidDBUsername>erapid</erapidDBUsername>
+		<erapidDBPassword>erapid@382</erapidDBPassword> 				
+		<dbSFDCServerName>lebhq-sql411dev</dbSFDCServerName>
+		<dbSFDCServerPort>1433</dbSFDCServerPort> 
+		<SFDCDB>SalesforceSIT</SFDCDB>
+		<SFDCDBUsername>erapid</SFDCDBUsername>
+		<SFDCDBPassword>H5najdUR</SFDCDBPassword> 															     
+		<dbUSRepServerName>lebhq-sql411</dbUSRepServerName>
+		<dbUSRepServerPort>1433</dbUSRepServerPort> 
+		<USRepDB>SalesReps</USRepDB>
+		<USRepDBUsername>erapid</USRepDBUsername>
+		<USRepDBPassword>ZWZ3peMU</USRepDBPassword>	
+		<dbPSAServerName>lebhq-sql411</dbPSAServerName>
+		<dbPSAServerPort>1433</dbPSAServerPort> 
+		<PSADB>SalesReps</PSADB>
+		<PSADBUsername>erapid</PSADBUsername>
+		<PSADBPassword>ZWZ3peMU</PSADBPassword>	
+		<dbBPCSServerName>csas400</dbBPCSServerName>
+		<BPCSDB>BPCSFPG</BPCSDB>
+		<BPCSUSRDB>BPCSUSRFPG</BPCSUSRDB>
+		<BPCSDBUsername>logiasrv</BPCSDBUsername>
+		<BPCSDBPassword>logiasrv</BPCSDBPassword>
+		<WEBServerName>sec-cpqdbdev</WEBServerName>
+		<WEBServerPort>1439</WEBServerPort> 			
+		<WEBDB>wsdev</WEBDB>
+		<WEBDBUsername>web_store</WEBDBUsername>
+		<WEBDBPassword>db@wE8st0r</WEBDBPassword>	
+		<messageUS>Training only, do not use for quoting!!!</messageUS>
+		<messageTypeUS>3</messageTypeUS>
+		<IMSServer>lebhq-imsxdev</IMSServer>
+	</instance>
+</erapid>

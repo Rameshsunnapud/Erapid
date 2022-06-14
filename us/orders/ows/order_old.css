@@ -1,0 +1,73 @@
+test{
+	border-bottom: dotted #C0C0C0 1;
+	border-left-width: 1;
+	border-right-width: 1;
+	border-top-width: 1;
+	font-family : sans-serif;
+	font-size : medium;
+}
+.test1{
+	border-bottom: Black;
+	border-left-width: 1;
+	border-right-width: 1;
+	border-top-width: 1;
+	font-family : sans-serif;
+	font-size : 10pt;
+	font-weight : bold;
+	border-bottom-color : Black;
+	direction : ltr;
+	padding : 12 6 5 4;
+	padding-bottom : 4;
+}
+
+.tb{
+	border-collapse: collapse;
+	border-color : Black;
+}
+.tdheader{
+	font : bold 10pt Verdana;
+	color : #333333;
+}
+.tdheader1{
+	font : bold 10pt Verdana;
+	color : #333333;
+	page-break-after : always;
+}
+.tdheader2{
+	font : bold 8.5pt Verdana;
+	color : #333333;
+}
+.tddash{
+	border-bottom: 1px dotted #C0C0C0;
+	border-left-width: 1;
+	border-right-width: 1;
+	border-top-width: 1;
+	font : normal small-caps 8.5 pt/14pt Verdana;
+	padding-bottom : 1;
+}
+.tdnodash{
+	border-bottom: 0px;
+	border-left-width: 1;
+	border-right-width: 1;
+	border-top-width: 1;
+	font : normal small-caps 8.5pt/14pt Verdana;
+	padding-bottom : 1;
+}
+.tdsolid{
+	border-bottom: 2px solid #C0C0C0;
+	border-left-width: 1;
+	border-right-width: 1;
+	border-top-width: 1;
+	font : normal small-caps 8.5pt/14pt Verdana;
+	padding-bottom : 3;	
+}
+	
+.tddashtop{
+	border-bottom: 1px dotted #C0C0C0;
+	border-left-width: 1;
+	border-right-width: 1;
+	border-top-width: 1;
+	font : normal small-caps 8.5pt/14pt Verdana;
+	padding-bottom : 1;
+	padding-top : 3;
+}

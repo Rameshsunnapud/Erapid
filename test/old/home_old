@@ -1,0 +1,218 @@
+<% request.setCharacterEncoding( response.getCharacterEncoding() ); %>
+<%@ page language="java" import="java.text.*" import="java.util.*" import="java.io.*"   contentType="text/html; charset=utf-8" pageEncoding="utf-8" errorPage="error.jsp" %>
+
+
+
+
+
+<%@ include file="header.jsp"%>
+
+
+
+<div id='container' class='container'>
+<div class="mainbody"> 
+<script language='javascript'>
+function SelectOrderNo(){  
+	if(document.form1.qtype.value=="alt" || document.form1.qtype.value=="cpy"){
+		//alert("COPY OR ALT");
+		document.getElementById("divSubcat").style.display = 'block';
+	}
+	else{
+		//alert("HERE"); 
+		document.getElementById("divSubcat").style.display = 'none';
+	} 
+}
+</script>  
+<% 
+org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger("erapidLogger");
+try{ 
+	String[] products=userSession.getProducts();
+	String[] productsDescription=userSession.getProductsDescription();
+	String[] reps=userSession.getReps();
+	String[] repsNames=userSession.getRepsNames();
+	String search=""; 
+	String selected2="";
+	String how="";
+	String by="";
+
+	%>
+	<table border='0' width='100%' height='100%'><tr><td valign='top'> 
+	<form method='post' name='form1' action='product_transfer.jsp'>
+	<h2>NOWA OFERTA</h2><br>
+	<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+	<TR><TD WIDTH="200" ALIGN="RIGHT" class="important">RODZAJ OFERTY: </TD>
+	<TD><select name='qtype' onchange="SelectOrderNo()">
+	<option value='1'>NOWA</option>
+	<option value='alt'>ALTERNATYWNA</option>
+	<option value='cpy'>KOPIA</option>
+	</select>
+	</TD>
+	</TR>
+	<TR><TD WIDTH="200" ALIGN="RIGHT" class="important">PRODUKT: </TD>
+	<TD><select name='product'>
+	<option value='0'>----------WYBIERZ JEDEN----------</option>
+	<%	
+	for (int ik=0; ik<products.length;ik++){
+		out.println("<option value='"+products[ik]+"' >"+productsDescription[ik]+" </option>");
+	}
+
+	%>
+	</select>
+	</TD>
+	</TR>
+	<%
+	if(userSession.getGroup().startsWith("Poland")||userSession.getGroup().startsWith("PL_FISAW")){
+		%>
+		<TR><TD WIDTH="200" ALIGN="RIGHT" class="important">OFERTA DLA: </TD> 
+		<TD><select name='repNum'>
+		<% 
+		out.println("<option value='"+userSession.getRepNo()+"'>&nbsp;</option>");
+		for(int i=0; i<reps.length; i++){
+			out.println("<option value='"+reps[i]+"'>"+repsNames[i]+"--"+reps[i]+"</option>"); 
+		}
+		%>
+		</select> 
+		<%
+	}
+	%>	
+	<TR id="divSubcat" style="display: none;"><TD WIDTH="200" ALIGN="RIGHT" class="important"><a href="javascript:showPopup2('quote_no_pl.jsp?rep_no=')" color="#000066" face="Arial">NUMER OFERTY:</a></TD><TD><input type='text' readonly name='q_no'  value=''></TD></TR>
+	<TR><TD>&nbsp;</TD><TD align='center'><input type='button' name='sbmt' value='Start' onclick="check()" class='button'></TD></TR>					
+	</table>
+	</form>
+	</td><td valign='top'>
+	<form method='post' name='edit' action='search.jsp'> 
+	<h2>KOREKTA/WYSZUKIWANIE OFERTY</h2><br>
+	<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0"> 
+	<TR><TD WIDTH="200" ALIGN="RIGHT" class="important">PRODUKT:</TD>
+	<TD valign='top'> <select name='product'>
+	<option value='no'>----------WYBIERZ JEDEN----------</option> 
+	<%
+	for (int ik=0; ik<products.length;ik++){
+		out.println("<option value='"+products[ik]+"' >"+productsDescription[ik]+" </option>");
+	}
+	%>
+	</select>
+	</TD>
+	</TR>
+	<TR><TD WIDTH="200" ALIGN="RIGHT" class="important">GRUPA:</TD>
+	<TD valign='top'><select name='by'>
+	<option value='no'>----------WYBIERZ JEDEN------</option>
+	 <%
+	selected2="";
+	if(by.equals("quotes")){
+		selected2="selected";
+	}
+	%>						
+	<option value='quotes' <%=selected2%>>Aktywne</option>
+	<%
+	selected2="";
+	if(by.equals("orders")){
+		selected2="selected";
+	}
+	%>							
+	<option value='orders' <%=selected2%>>Zam&#243;wienia</option>
+	 <%
+	selected2="";
+	if(by.equals("budgetv")){
+		selected2="selected";
+	}
+	%>							
+	<option value='budget' <%=selected2%>>Bud&#380;etowe</option>
+	<%
+	selected2="";
+	if(by.equals("lost")){
+		selected2="selected";
+	}
+	%>							
+	<option value='lost' <%=selected2%>>Niezrealizowane</option>
+	<%
+	selected2="";
+	if(by.equals("all")){
+		selected2="selected";
+	}
+	%>							
+	<option value='all' <%=selected2%>>Wszystkie</option>
+	</select>
+	</TD> 
+	<TR><TD WIDTH="200" ALIGN="RIGHT" class="important">SZUKAJ WED&#321;UG:</TD>
+	<TD valign='top'><select name='how' class='select'>
+	<option value='no'>----------WYBIERZ JEDEN------</option>
+	<%
+	selected2=""; 
+	if(how.equals("orderNo")){
+		selected2="selected";
+	}
+	%>
+	<option value='orderNo' <%=selected2%>>Numeru</option>
+	<%
+	selected2="";
+	if(how.equals("archName")){
+		selected2="selected";
+	}
+	%>						
+	<option value='archName' <%=selected2%>>Architekta</option>
+	<%
+	selected2="";
+	if(how.equals("date")){  
+		selected2="selected";
+	}
+	%>	 					
+	<option value='date' <%=selected2%>>Data Oferty</option>
+	<%
+	selected2="";
+	if(how.equals("custLoc")){  
+		selected2="selected";
+	}
+	%>						
+	<option value='custLoc' <%=selected2%>>Klienta</option> 
+	 <%
+	selected2="";    
+	if(how.equals("projectName")){     
+		selected2="selected";         
+	} 
+	%>						
+	<option value='projectName' <%=selected2%>>Nazwy Inwestycji</option> 
+	</select>
+	</TD>
+	</TR>      
+	<%
+	if(userSession.getGroup().startsWith("Poland")||userSession.getGroup().startsWith("PL_FISAW")){
+		%>
+		<TR><TD WIDTH="200" ALIGN="RIGHT" class="important">OFERTA DLA: </TD>
+		<TD valign='top'><select name='repNum'>
+		<%
+		out.println("<option value='"+userSession.getRepNo()+"'>&nbsp;</option>");
+		for(int i=0; i<reps.length; i++){
+			out.println("<option value='"+reps[i]+"'>"+repsNames[i]+"--"+reps[i]+"</option>");
+		}
+		%>
+		</select>
+		<%
+	}
+	%>				
+	<TR><TD WIDTH="200" ALIGN="RIGHT" class="important">ZNAJD&#377;:</TD><TD valign='top'> <input type='text' name='search' size='25' value= '<%=search%>' class='text'></TD></TR>
+	<TR><TD>&nbsp;</TD><TD align='center'><input type='submit' value='Szukaj' class='button' name='testing2'></TD></TR>
+	</table><BR>
+	</td></tr><tr><td colspan='2' valign='top'>
+	<%
+	out.println(userSession.getTopTen());
+	
+}
+catch(Exception e){
+	logger.debug("START ERROR home.jsp");
+	logger.debug("Exception:"+e);
+	logger.debug("User ID:"+userSession.getUserId());
+	logger.debug("User Name:"+userSession.getUserName());
+	logger.debug("Order Number:"+userSession.getOrderNo());
+	logger.debug("Country: "+userSession.getCountry());
+	logger.debug("END ERROR");
+	out.println("ERROR: CONTACT ERAPID TEAM");
+	out.println("::"+e);
+}
+%>
+</td></tr></table>
+</form>
+</div>
+</div>
+</body>
+</html>

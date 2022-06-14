@@ -1,0 +1,16 @@
+			.maintitle { color:#333333; font-size:16pt; font-family:arial, helvetica; }
+			.maintitle2 { color:#333333; font-size:9pt;font-family:arial, helvetica; }
+			.subtitle { color:#333333; font-size:12pt; font-family:arial, helvetica; }
+			.mainfooter { color:#666666; font-size:11pt; font-family:tahoma, arial, helvetica; }
+			.mainbody { color:#333333; font-size:13pt; font-family:arial, verdana, helvetica; text-decoration:none; }
+			.mainbody2 { color:#333333; font-size:11pt; font-family:arial, verdana, helvetica; text-decoration:none; }
+			.mainbodyh { color:#333333; font-size:13pt; font-family:arial, verdana, helvetica; text-decoration:none; 
+			.maindesc { color:#333333; font-size:11pt; font-family:arial, verdana, helvetica; text-decoration:none; }
+			.schedule { color:#000000; font-size:11pt; font-family:arial, verdana, helvetica; text-decoration:none; }
+			.totprice { color:#000000; font-size:15pt; font-family:arial, helvetica; text-decoration:none; }
+			.tableline { border-right: #B4DC61 1px solid; border-top: #B4DC61 1px solid; border-left: #B4DC61 1px solid; border-bottom: #B4DC61 1px solid; }
+			.tableline_ejc { border-right: #B4DC61 1px solid; border-top: #B4DC61 1px solid; border-left: #B4DC61 1px solid; border-bottom: #B4DC61 1px solid; }
+			.tableline_iwp { border-right: #cc9966 1px solid; border-top: #cc9966 1px solid; border-left: #cc9966 1px solid; border-bottom: #cc9966 1px solid; }
+			.tableline_row { padding-right: 5px; padding-left: 5px; padding-bottom: 3px; padding-top: 3px; }
+			.table_thin_borders{border : thin groove;}
+			.sty_fnt_def { color:#333333; font-size:11pt;	font-family:verdana, arial, helvetica; text-decoration:none; }

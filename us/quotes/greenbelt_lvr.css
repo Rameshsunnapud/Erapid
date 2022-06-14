@@ -1,0 +1,204 @@
+.tab_body_info table {
+    border: 0px solid black;
+    border-collapse:collapse;
+    font-family:Arial;
+    font-size:9pt;
+    color:black;
+    text-align:center;
+    padding-bottom:10px;
+    margin:auto;
+    width:95%;
+    margin-left:20px;
+    margin-right:20px;
+}
+
+.tab_body_info tr:nth-child(2n) {
+  background-color: #f2f2f2;
+}
+
+.tab_body_info tr {
+  background-color: white;
+}
+
+.tab_body_info td {
+  text-align:center;
+}
+
+.header_table table {
+    border: 0px solid black;
+    border-collapse:collapse;
+    font-family:Arial;
+    font-size:10pt;
+    color:black;
+    text-align:center;
+    padding-bottom:10px;
+    margin:auto;
+    width:50%;
+    margin-left:10px;
+    margin-right:10px;
+}
+
+.inner_table table, tr, td {
+	margin-left:0px;
+	padding-left:0px;
+}
+
+.styletr {
+	border-bottom: 1px solid black;
+	padding-left: 10px;
+	margin-left:10px;
+} 
+
+.styletr2 {
+	border-bottom: 1px solid black;
+	padding-left: 10px;
+	margin-left:10px;
+	width: 100%;
+} 
+
+.underline {
+    border-bottom: 1px solid black;
+    padding-right: 20em;
+}
+	
+table {
+	border: 0px solid black;
+	border-collapse:collapse;
+	font-family:Arial;
+    font-size:10pt;
+    color:black;
+	margin-right:10px;
+}
+
+
+tr, td {
+	font-family:Arial;
+    font-size:10pt;
+    color:black;
+	padding-top: .5em;
+    padding-bottom: .5em;
+}
+
+html, body {
+    height: 100%;
+    width: 85%;
+    z-index: 100;
+    margin: auto;
+	font-family:Arial;
+    font-size:10pt;
+    color:black;
+}
+
+hr {
+	border: 0px;
+    background-color:#B00000;
+    clear:both;
+    text-align:center;
+    margin:auto;
+    margin-top:10px;
+	margin-bottom:10px;
+    padding:1.2px;
+	width: 100%
+}
+
+label {
+	font-weight: bold;
+	padding-left: 10px;
+}
+
+img.logo {
+	margin-left:10px;
+	margin-top:15px;
+}
+
+
+
+/*For CS Logo*/
+.FirstLayoutLeft {
+    color:white;
+	margin-left:10px;
+	margin-top:10px;
+    padding:0px;
+    margin: auto;
+    
+}
+
+/*paragraph 1 Styles for Address of the company*/
+.FirstLayoutRight {
+    font-family:Arial;
+    font-size:11pt;
+    color: red;
+    width:350px;
+    float:right;
+    margin:auto;
+    margin-top:-30px;
+	margin-bottom:20px;
+    padding:5px;
+		
+}
+
+.TextStyleGrey {
+	font-family:Arial;
+	font-size:11pt;
+    float:right;
+    color:grey;
+}
+
+.Title {
+	font-size:11pt;
+	font-weight: bold;
+    float:left;
+    color:black;
+	width: 100%;
+	padding:0px;
+}
+
+.Title hr {
+	margin-top:0px;
+}
+
+.Title label {
+	padding-left: 10px;
+}
+
+.Title div {
+	margin-bottom:0px;
+}
+
+div {
+	margin-top:0px;
+	margin-bottom:0px;
+	padding:0px;
+}
+
+.data {
+	text-align: justify;
+    text-justify: inter-word;
+	font-stretch: expanded;
+    color:grey;
+    float:left;
+	padding-left: 10px;
+}
+
+.data p {
+	text-align: justify;
+    text-justify: inter-word;
+	font-stretch: expanded;
+    color:grey;
+    float:left;
+	padding-right: 10px;
+}
+
+.data2 {
+	text-align: justify;
+    text-justify: inter-word;
+	font-stretch: expanded;
+    float:left;
+	padding-left: 10px;
+}
+
+.product_title {
+	font-size:20pt;
+}
+
+

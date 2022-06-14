@@ -1,0 +1,93 @@
+.test{
+	border-top : 4pt solid #6699CC;
+	height : 1px;
+}
+.nob{
+	border-collapse : collapse;
+}
+
+.testb{
+	border-bottom : 4pt solid #6699CC;
+	height : 1px;
+	font : normal Verdana;
+	color : White;
+}
+
+.nob1{
+	border-collapse : collapse;
+}
+a{
+	color : White;
+}
+a.new{
+	color :black;
+	font-style : normal;
+	font-weight : bold;
+}
+a img { border: none; }
+a:hover { color: red; text-decoration: underline; }
+
+.box {
+	background-color: #E3EDF5;
+	border: 1px dotted #369;
+	padding: 10px;
+}
+
+form#search {
+	margin-top: 12px;
+	margin-right: 12px;
+	margin-bottom: 7px;
+}
+form#search input.button {
+	background: #C2D7EB;
+	border: 1px solid #6699CC;
+	cursor: hand; /* for IE */
+	font-size: x-small;	
+}
+form#search input.text {
+	border: 1px solid #6699CC;
+	font-size: x-small;
+	height : 18;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	vertical-align : top;
+	padding-top : -1%;
+}
+
+label { background: #6699CC none; color: #000; } 
+
+.regnow-header {
+	font-size: 120%;
+	font-weight: bold;
+	margin-top: 4px;
+	border-bottom: 1px solid #369;
+	background-color: #999999;	
+	color:white;
+}
+td{
+	font-family: Verdana;
+	font-size : 8pt;
+}
+h1 {
+	font-size: 10pt;
+	border-bottom: 1px dashed Black;
+	background-color: #2c7dc1;
+	padding-top: 1px;
+	padding-bottom: 1px;
+	color : White;
+	text-transform : capitalize;
+}
+hr{
+	border-bottom : thin solid #6699cc;
+}
+.darktr {
+	FONT-WEIGHT: bold; FONT-SIZE: 11px; COLOR: #ffffff; FONT-FAMILY: verdan	a; BACKGROUND-COLOR: #2c7dc1
+}
+.tdt {
+	FONT-SIZE: 11px; COLOR: black; FONT-FAMILY: verdana,arial,helvetica; BACKGROUND-COLOR: #efefef
+}
+.battr {
+	FONT-SIZE: 11px; COLOR: black; FONT-FAMILY: verdana,arial,helvetica; BACKGROUND-COLOR: #cccccc
+}
+.pbr{
+	page-break-after : always;
+}

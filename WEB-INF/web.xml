@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/j2ee/dtds/web-app_2_3.dtd">
+<web-app>
+    <display-name>erapid</display-name>
+    <!--
+    <servlet>
+        <servlet-name>TableMaint</servlet-name>
+        <servlet-class>com.csgroup.general.TableMaint</servlet-class>
+   </servlet>
+   <servlet-mapping>
+        <servlet-name>TableMaint</servlet-name>
+        <url-pattern>/classes/com/csgroup/general/TableMaint</url-pattern>
+   </servlet-mapping>-->
+   
+    <context-param>
+        <param-name>HOST</param-name>
+        <param-value>lebhq-erusdev.c-sgroup.com</param-value>
+        <description>Server Name</description>
+    </context-param>
+    <context-param>
+        <param-name>DBHOST</param-name>
+        <param-value>lebhq-erdbdev.c-sgroup.com</param-value>
+        <description>DATBASE Server Name</description>
+    </context-param>
+    <session-config>
+        <session-timeout>200</session-timeout>
+    </session-config>
+    <mime-mapping>
+        <extension>txt</extension>
+        <mime-type>text/plain</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>htm</extension>
+        <mime-type>text/html</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>gif</extension>
+        <mime-type>image/gif</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>jpeg</extension>
+        <mime-type>image/jpeg</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>html</extension>
+        <mime-type>text/html</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>jpg</extension>
+        <mime-type>image/jpeg</mime-type>
+    </mime-mapping>
+    <welcome-file-list>
+        <welcome-file>login.html</welcome-file>
+    </welcome-file-list>
+    <error-page>
+    	<exception-type>java.lang.NullPointerException</exception-type>
+    	<location>/error.jsp</location>
+    </error-page>
+    <error-page>
+    	<error-code>500</error-code>
+    	<location>/error500.jsp</location>
+    </error-page>
+</web-app>

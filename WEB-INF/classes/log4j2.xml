@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="DEBUG">
+	<Properties>
+		<Property name="logPath">D:/erapid/logs/</Property>
+		<Property name="rollingFileName">application</Property>
+		<Property name="rollingImsFileName">ims</Property>	
+	</Properties>
+	<Appenders>
+	
+		<Console name="Console-Appender" target="SYSTEM_OUT">
+			<PatternLayout>
+				<pattern>
+					[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
+				</pattern>
+			</PatternLayout>
+		</Console>
+				
+		 <RollingFile name="rollingFile" fileName="${logPath}/${rollingFileName}.log" filePattern="${logPath}/${rollingFileName}_%d{yyyy-MM-dd}.log">
+			<PatternLayout>
+				<pattern>
+					[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
+				</pattern>
+			</PatternLayout>
+            <Policies>
+                <!-- Causes a rollover if the log file is older than the current JVM's start time -->
+                <OnStartupTriggeringPolicy />
+                <!-- Causes a rollover once the date/time pattern no longer applies to the active file -->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            </Policies>
+        </RollingFile>
+		
+		<RollingFile name="rollingImsFile" fileName="${logPath}/${rollingImsFileName}.log" filePattern="${logPath}/${rollingImsFileName}_%d{yyyy-MM-dd}.log">
+			<PatternLayout>
+				<pattern>
+					[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
+				</pattern>
+			</PatternLayout>
+            <Policies>
+                <!-- Causes a rollover if the log file is older than the current JVM's start time -->
+                <OnStartupTriggeringPolicy />
+                <!-- Causes a rollover once the date/time pattern no longer applies to the active file -->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            </Policies>
+        </RollingFile>
+	</Appenders>
+	<Loggers>	
+		<Logger name="erapidLogger" level="debug" additivity="false">
+			<appender-ref ref="rollingFile" level="debug"/>
+			<AppenderRef ref="Console-Appender" />
+		</Logger>
+		<Logger name="imsLogger" level="debug" additivity="false">
+			<appender-ref ref="rollingImsFile" level="debug"/>
+			<AppenderRef ref="Console-Appender" />
+		</Logger>
+		<Root level="debug" additivity="false">
+			<AppenderRef ref="rollingFile" />
+			<appender-ref ref="rollingImsFile" />
+			<AppenderRef ref="Console-Appender" />
+		</Root>
+	</Loggers>
+</Configuration>

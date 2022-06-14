@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.6.0_21" class="java.beans.XMLDecoder"> 
+	<object class="com.csgroup.general.ErapidBean"> 
+		<void property="serverName"> 
+			<string>lebhq-eurdev</string> 
+		</void> 
+		<void property="dbServerName"> 
+			<string>lebhq-eurdev</string> 
+		</void>
+		<void property="erapidDB"> 
+			<string>cseintdev</string> 
+		</void>
+		<void property="erapidSysDB"> 
+			<string>cseintdevsys</string> 
+		</void>	
+		<void property="erapidDBuserName"> 
+			<string>erapid</string> 
+		</void>
+		<void property="erapidDBpassword"> 
+			<string>erapid@382</string> 
+		</void>		
+	</object> 
+</java> 

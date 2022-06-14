@@ -1,0 +1,1073 @@
+
+<%
+
+try{
+boolean sectionsGood=true;
+
+%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+	<head>
+		<title>Order transfer complete to BPCS</title>
+		<link rel='stylesheet' href='craft.css' type='text/css' />
+	</head>
+	<SCRIPT language="JavaScript">
+		function poponload()
+		{
+			var time=new Date();
+			hours=time.getHours();
+			mins=time.getMinutes();
+			secs=time.getSeconds();
+			closeTime=hours*3600+mins*60+secs;
+			closeTime+=2;  // This number is how long the window stays open
+			//  Timer();
+		}
+		function Timer(){
+			var time=new Date();
+			hours=time.getHours();
+			mins=time.getMinutes();
+			secs=time.getSeconds();
+			curTime=hours*3600+mins*60+secs
+			if(curTime>=closeTime){
+				self.close();
+			}
+			else{
+				window.setTimeout("Timer()",1000)
+			}
+		}
+	</SCRIPT>
+
+	<body onload="poponload()">
+	<br>
+	<h1>EFS Shop Order system</h1>
+		<%@ page language="java" import="java.sql.*" import="java.util.*" import="java.io.*" import="java.text.*" errorPage="error.jsp" %>
+		<%
+		//String order_no = request.getParameter("sp-q");
+		%>
+		<%//@ include file="db_con.jsp"%>
+		<%//@ include file="db_con_bpcs.jsp"%>
+		<%
+					//
+					Vector transfer=new Vector();Vector shop_order_no=new Vector();int counter=0;Vector part_sub=new Vector();Vector product_desc=new Vector();
+					Vector qty=new Vector();Vector shop_item_no=new Vector();Vector seq_no=new Vector();
+					//
+					Vector qty1=new Vector();Vector text_identifier=new Vector();Vector bpcs_part_main=new Vector();Vector bpcs_part_sub=new Vector();
+					Vector part_no=new Vector();int counter1=0;Vector item_no=new Vector();
+					//routings store
+					Vector bpcs_part_main_rout=new Vector();Vector bpcs_part_sub_rout=new Vector();int counter_rout=0;Vector item_no_rout=new Vector();
+					Vector block_code_rout=new Vector();Vector setup_time_rout=new Vector();Vector routing_time_rout=new Vector();Vector op_no_rout=new Vector();Vector work_center_rout=new Vector();
+					Vector op_name_rout=new Vector();
+
+					NumberFormat for13EFS = NumberFormat.getInstance();
+					for13EFS.setMaximumFractionDigits(3);
+					for13EFS.setMinimumFractionDigits(3);
+
+					//
+					String dir_pathEFS="\\\\lebhq-erusdev\\TRANSFER\\BPCS_BOM\\";String final_out_efs="";String final_notes_out_efs="";
+					String dir_path1EFS="\\\\lebhq-erusdev\\TRANSFER\\BPCS_BOM\\test\\";
+		//			out.println("Let's see....OK.................<br>"+"Check the out put in"+dir_pathEFS+" for the BOM upload files"+"<br><br><br>");
+					ResultSet rs_find_efs = stmt.executeQuery("SELECT * FROM cs_bpcs_mat_shop_orders where cse_order_no like '"+order_no+"' and transfer='Y' and prod_desc <> 'misc' order by bpcs_shop_order_no ");
+					if (rs_find_efs !=null) {
+					while (rs_find_efs.next()){
+					shop_order_no.addElement(rs_find_efs.getString ("bpcs_shop_order_no"));
+					product_desc.addElement(rs_find_efs.getString ("prod_desc"));
+					part_sub.addElement(rs_find_efs.getString ("bpcs_part_sub"));
+					qty.addElement(rs_find_efs.getString ("qty"));
+					shop_item_no.addElement(rs_find_efs.getString ("item_no"));
+					seq_no.addElement(rs_find_efs.getString ("seq_no"));
+					counter++;
+					}
+					}
+
+
+					ResultSet rs_cs_materials_output1 = stmt.executeQuery("SELECT * FROM cs_materials_output where order_no like '"+order_no+"' order by item_no");
+					if (rs_cs_materials_output1 !=null) {
+					while (rs_cs_materials_output1.next()){
+					item_no.addElement(rs_cs_materials_output1.getString ("item_no"));
+					part_no.addElement(rs_cs_materials_output1.getString ("part_no"));
+					qty1.addElement(rs_cs_materials_output1.getString ("qty"));
+					text_identifier.addElement(rs_cs_materials_output1.getString ("text_identifier"));
+					bpcs_part_main.addElement(rs_cs_materials_output1.getString ("bpcs_part_main"));
+					bpcs_part_sub.addElement(rs_cs_materials_output1.getString ("bpcs_part_sub"));
+					counter1++;
+					}
+					}
+		//routings tables
+		Vector rmove=new Vector();
+		Vector rque=new Vector();
+					ResultSet rs_cs_routings_output1 = stmt.executeQuery("SELECT item_no,work_center,op_no,op_name,type_id,bpcs_part_main,bpcs_part_sub, sum(setup_time),sum(routing_time),sum(rmove),sum(rque) FROM cs_routings_output where order_no like '"+order_no+"' and len(work_center)>0 group by item_no,work_center,op_no,op_name,type_id,bpcs_part_main,bpcs_part_sub order by item_no");
+					if (rs_cs_routings_output1 !=null) {
+					while (rs_cs_routings_output1.next()){
+					item_no_rout.addElement(rs_cs_routings_output1.getString ("item_no"));
+					block_code_rout.addElement(rs_cs_routings_output1.getString ("type_id"));
+					op_no_rout.addElement(rs_cs_routings_output1.getString ("op_no"));
+					op_name_rout.addElement(rs_cs_routings_output1.getString ("op_name"));
+					work_center_rout.addElement(rs_cs_routings_output1.getString ("work_center"));
+					bpcs_part_main_rout.addElement(rs_cs_routings_output1.getString ("bpcs_part_main"));
+					bpcs_part_sub_rout.addElement(rs_cs_routings_output1.getString ("bpcs_part_sub"));
+					setup_time_rout.addElement(rs_cs_routings_output1.getString (8));
+					routing_time_rout.addElement(rs_cs_routings_output1.getString (9));
+					rmove.addElement(rs_cs_routings_output1.getString (10));
+					rque.addElement(rs_cs_routings_output1.getString (11));
+					counter_rout++;
+					}
+					}
+		//			out.println("counter_rout"+counter_rout);
+			 //routings table done
+		Vector rmove_sum=new Vector();
+		Vector rque_sum=new Vector();
+			  Vector bpcs_part_main_sum=new Vector();Vector bpcs_part_sub_sum=new Vector();Vector op_no_sum=new Vector();Vector op_name_sum=new Vector();
+			Vector work_center_sum=new Vector();Vector setup_time_sum=new Vector();Vector routing_time_sum=new Vector();
+					ResultSet rs_cs_routings_sum = stmt.executeQuery("SELECT bpcs_part_main,bpcs_part_sub,op_no,op_name,work_center,sum(setup_time),sum(routing_time),sum(rmove),sum(rque) FROM cs_routings_output where order_no='"+order_no+"' and block_code like 'frame%' group by bpcs_part_main,bpcs_part_sub,op_no,work_center,op_name");
+					if (rs_cs_routings_sum !=null) {
+					while (rs_cs_routings_sum.next()){
+					bpcs_part_main_sum.addElement(rs_cs_routings_sum.getString (1));
+					bpcs_part_sub_sum.addElement(rs_cs_routings_sum.getString (2));
+					op_no_sum.addElement(rs_cs_routings_sum.getString (3));
+					op_name_sum.addElement(rs_cs_routings_sum.getString (4));
+					work_center_sum.addElement(rs_cs_routings_sum.getString (5));
+					setup_time_sum.addElement(rs_cs_routings_sum.getString (6));
+					routing_time_sum.addElement(rs_cs_routings_sum.getString (7));
+					rmove_sum.addElement(rs_cs_routings_sum.getString (8));
+					rque_sum.addElement(rs_cs_routings_sum.getString (9));
+				    }
+					}
+
+					if(counter<=0){
+					out.println("There are no Shop orders ready for BPCS/BOM Export<br>");
+					}
+					else{
+					String rEFS="";
+					int count_shop=1;String county="";String parent_qty="";
+						for(int i=0;i<counter;i++){
+						  // If it is product only
+						  if( (product_desc.elementAt(i).toString().equals("product")) ){
+								ResultSet rs_efs_shop_paper1 = stmt.executeQuery("SELECT part_no,cast(detail_desc as varchar(600)),bpcs_part_main,sum(qty) FROM cs_materials_output where order_no like '"+order_no+"' and item_no='"+shop_item_no.elementAt(i)+"' and (text_identifier not like 'FRAME%' AND text_identifier not like 'PAN%') group by part_no,cast(detail_desc as varchar(600)),bpcs_part_main ");
+									if (rs_efs_shop_paper1 !=null) {
+										while (rs_efs_shop_paper1.next()){
+										String t1EFS=rs_efs_shop_paper1.getString(1);
+										String t2EFS=rs_efs_shop_paper1.getString(2);
+										String t3=rs_efs_shop_paper1.getString(3);
+										String t4=rs_efs_shop_paper1.getString(4);
+										//counter
+										if(count_shop>9){county="0"+count_shop;}else{county="00"+count_shop;}
+										if(t3.length()<15){
+												String tv="";
+											for(int v=0;v<(15-t3.length());v++){
+											tv=" "+tv;
+		//									out.println("the T3 value: "+t3.length()+"vb"+v+"***"+tv+"<br>");
+										    }
+											t3=t3+tv;
+										}
+										if(t1EFS.length()<15){
+											String tv="";
+											for(int v=0;v<(15-t1EFS.length());v++){
+											tv=" "+tv;
+											}
+											t1EFS=t1EFS+tv;
+		//									t3=t3+tv;
+										}
+										rEFS="";
+										for (int ii = 0; ii < t4.length(); ii ++) {
+											if (t4.charAt(ii) != '.' && t4.charAt(ii) != ',') r += t4.charAt(ii);
+										}
+										t4=rEFS;
+										if(t4.length()<11){
+											String tv="";
+											for(int v=0;v<(11-t4.length());v++){
+											tv="0"+tv;
+											}
+											t4=tv+t4;
+										}
+										//erapid line_no
+										String erapid_line_no=seq_no.elementAt(i).toString();
+										if(erapid_line_no.length()<3){
+											String tv="";
+											for(int v=0;v<(3-erapid_line_no.length());v++){
+											tv=tv+"0";
+										    }
+											erapid_line_no=tv+erapid_line_no;
+										}
+										//quantity of parent
+										rEFS="";
+										parent_qty=qty.elementAt(i).toString();
+										for (int it = 0; it < parent_qty.length(); it ++) {
+											if (parent_qty.charAt(it) != '.' && parent_qty.charAt(it) != ',') r += parent_qty.charAt(it);
+										}
+										parent_qty=rEFS;
+										if(parent_qty.length()<11){
+												String tv="";
+												for(int v=0;v<(11-parent_qty.length());v++){
+												tv="0"+tv;
+												}
+												parent_qty=tv+parent_qty;
+										}
+		//								final_out_efs="";
+										final_out_efs=final_out_efs+county+"MU"+t3+t1EFS+t4+"0000"+"  "+"N"+"2 "+"000000"+order_no+erapid_line_no+"00000"+"000"+" "+parent_qty+"\r\n";
+		//the real debebug		out.println("order "+i+"The PRODUCT "+shop_item_no.elementAt(i)+" "+"<br>");
+		//								out.println("The PRODUCT "+shop_item_no.elementAt(i)+"<br>");
+									count_shop++;
+										}//the result set while
+									}//the result set if
+
+										//out put to text files
+									//	 BufferedWriter out1 = new BufferedWriter(new FileWriter(dir_pathEFS+"\\"+"B"+shop_order_no.elementAt(i)+"01_"+".txt"));
+									//	 out1.write(final_out_efs);
+		//								 out.write("out put done "+"<br>");
+									//	 out.flush();
+									//	 out1.flush();
+									//	 out1.close();
+										//out put to text files done
+							count_shop=1;county="";rs_efs_shop_paper1.close();
+									out.println("Shop Order "+shop_order_no.elementAt(i)+" sent to BPCS successfully......."+"<br>");
+						  }// If it is product only
+						  //iF IT IS A PAN ONLY - in the query below we used to cast(sum(qty)as integer)
+						  if( (product_desc.elementAt(i).toString().equals("pan")) ){
+								ResultSet rs_efs_shop_paper1 = stmt.executeQuery("SELECT part_no,cast(detail_desc as varchar(600)),bpcs_part_sub,sum(qty) FROM cs_materials_output where order_no like '"+order_no+"' and item_no='"+shop_item_no.elementAt(i)+"' and text_identifier like 'PAN%' group by part_no,cast(detail_desc as varchar(600)),bpcs_part_sub");
+									if (rs_efs_shop_paper1 !=null) {
+										while (rs_efs_shop_paper1.next()){
+										String t1EFS=rs_efs_shop_paper1.getString(1);
+										String t2EFS=rs_efs_shop_paper1.getString(2);
+										String t3=rs_efs_shop_paper1.getString(3);
+										String t4=rs_efs_shop_paper1.getString(4);
+										//counter code
+										if(count_shop>9){county="0"+count_shop;}else{county="00"+count_shop;}
+										if(t3.length()<15){
+												String tv="";
+											for(int v=0;v<(15-t3.length());v++){
+											tv=" "+tv;
+		//									out.println("the T3 value: "+t3.length()+"vb"+v+"***"+tv+"<br>");
+										    }
+			//								t3=tv+t3;
+											t3=t3+tv;
+										}
+										if(t1EFS.length()<15){
+											String tv="";
+											for(int v=0;v<(15-t1EFS.length());v++){
+											tv=" "+tv;
+											}
+		//									t1EFS=tv+t1EFS;
+											t1EFS=t1EFS+tv;
+										}
+										rEFS="";
+										for (int ii = 0; ii < t4.length(); ii ++) {
+											if (t4.charAt(ii) != '.' && t4.charAt(ii) != ',') rEFS += t4.charAt(ii);
+										}
+										t4=rEFS;
+										if(t4.length()<11){
+											String tv="";
+											for(int v=0;v<(11-t4.length());v++){
+											tv="0"+tv;
+											}
+											t4=tv+t4;
+										}
+										//counter code
+										String erapid_line_no=seq_no.elementAt(i).toString();
+										if(erapid_line_no.length()<3){
+											String tv="";
+											for(int v=0;v<(3-erapid_line_no.length());v++){
+											tv=tv+"0";
+										    }
+											erapid_line_no=tv+erapid_line_no;
+										}
+										//quantity of parent
+										rEFS="";
+										parent_qty=qty.elementAt(i).toString();
+										for (int it = 0; it < parent_qty.length(); it ++) {
+											if (parent_qty.charAt(it) != '.' && parent_qty.charAt(it) != ',') rEFS += parent_qty.charAt(it);
+										}
+										parent_qty=rEFS;
+										if(parent_qty.length()<11){
+												String tv="";
+												for(int v=0;v<(11-parent_qty.length());v++){
+												tv="0"+tv;
+												}
+												parent_qty=tv+parent_qty;
+										}
+		//								final_out_efs="";
+										final_out_efs=final_out_efs+county+"MU"+t3+t1EFS+t4+"0000"+"  "+"N"+"2 "+"000000"+order_no+erapid_line_no+"00000"+"000"+" "+parent_qty+"\r\n";
+		//the real debebug				out.println("order "+(i)+"The PAN "+shop_item_no.elementAt(i)+" "+"<br>");
+		//								out.println("The PAN "+shop_item_no.elementAt(i)+"<br>");
+									count_shop++;
+										}//the result set while
+									}//the result set if
+
+										//out put to text files
+									//	 BufferedWriter out1 = new BufferedWriter(new FileWriter(dir_pathEFS+"\\"+"B"+shop_order_no.elementAt(i)+"01_"+".txt"));
+								//		 out1.write(final_out_efs);
+		//								 out.write("out put done "+"<br>");
+								//		 out.flush();
+								//		 out1.flush();
+								//		 out1.close();
+										//out put to text files done
+							count_shop=1;county="";rs_efs_shop_paper1.close();
+								//	out.println("Shop Order "+shop_order_no.elementAt(i)+" sent to BPCS successfully......."+"<br>");
+						  }// If it is A PAN ONLY
+						  //iF IT IS A frame ONLY - in the query below we used to cast(sum(qty)as integer)
+						  if( (product_desc.elementAt(i).toString().equals("frame")) ){
+								ResultSet rs_efs_shop_paper1 = stmt.executeQuery("SELECT bpcs_part_sub,PART_NO,sum(qty) FROM cs_materials_output where order_no like '"+order_no+"' and text_identifier like 'FRAME%' AND bpcs_part_sub='"+part_sub.elementAt(i)+"' group by bpcs_part_sub,part_no ");
+									if (rs_efs_shop_paper1 !=null) {
+										while (rs_efs_shop_paper1.next()){
+										String t3=rs_efs_shop_paper1.getString(1);
+										String t1EFS=rs_efs_shop_paper1.getString(2);
+										String t4=rs_efs_shop_paper1.getString(3);
+										//counter code
+										if(count_shop>9){county="0"+count_shop;}else{county="00"+count_shop;}
+										if(t3.length()<15){
+												String tv="";
+											for(int v=0;v<(15-t3.length());v++){
+											tv=" "+tv;
+		//									out.println("the T3 value: "+t3.length()+"vb"+v+"***"+tv+"<br>");
+										    }
+		//									t3=tv+t3;
+											t3=t3+tv;
+										}
+										if(t1EFS.length()<15){
+											String tv="";
+											for(int v=0;v<(15-t1EFS.length());v++){
+											tv=" "+tv;
+											}
+		//									t1EFS=tv+t1EFS;
+											t1EFS=t1EFS+tv;
+										}
+										rEFS="";
+										for (int ii = 0; ii < t4.length(); ii ++) {
+											if (t4.charAt(ii) != '.' && t4.charAt(ii) != ',') rEFS += t4.charAt(ii);
+										}
+										t4=rEFS;
+										if(t4.length()<11){
+											String tv="";
+											for(int v=0;v<(11-t4.length());v++){
+											tv="0"+tv;
+											}
+											t4=tv+t4;
+										}
+										//counter code
+										String erapid_line_no=seq_no.elementAt(i).toString();
+										if(erapid_line_no.length()<3){
+											String tv="";
+											for(int v=0;v<(3-erapid_line_no.length());v++){
+											tv=tv+"0";
+										    }
+											erapid_line_no=tv+erapid_line_no;
+										}
+										//quantity of parent
+										rEFS="";
+										parent_qty=qty.elementAt(i).toString();
+										for (int it = 0; it < parent_qty.length(); it ++) {
+											if (parent_qty.charAt(it) != '.' && parent_qty.charAt(it) != ',') rEFS += parent_qty.charAt(it);
+										}
+										parent_qty=rEFS;
+										if(parent_qty.length()<11){
+												String tv="";
+												for(int v=0;v<(11-parent_qty.length());v++){
+												tv="0"+tv;
+												}
+												parent_qty=tv+parent_qty;
+										}
+		//								final_out_efs="";
+										final_out_efs=final_out_efs+county+"MU"+t3+t1+t4+"0000"+"  "+"N"+"2 "+"000000"+order_no+erapid_line_no+"00000"+"000"+" "+parent_qty+"\r\n";
+		//the real debebug				out.println("order "+(i)+"The FRAME "+shop_item_no.elementAt(i)+" "+"<br>");
+		//								out.println("The FRAME "+shop_item_no.elementAt(i)+"<br>");
+									count_shop++;
+										}//the result set while
+									}//the result set if
+									//out put to text files
+		//								 BufferedWriter out1 = new BufferedWriter(new FileWriter(dir_pathEFS+"\\"+"B"+shop_order_no.elementAt(i)+"01_"+".txt"));
+		//								 out1.write(final_out_efs);
+		//								 out.write("out put done "+"<br>");
+			//	 						 out.flush();
+				//						 out1.flush();
+					//					 out1.close();
+										//out put to text files done
+							count_shop=1;county="";rs_efs_shop_paper1.close();
+								//	out.println("Shop Order "+shop_order_no.elementAt(i)+" sent to BPCS successfully......."+"<br>");
+						  }// If it is A FRAME ONLY
+						}//outer for
+					}// the else close
+
+				//Transfering Bills as on file starts
+				BufferedWriter out1EFS = new BufferedWriter(new FileWriter(dir_pathEFS+"\\"+"B"+order_no+".txt"));
+										 out1EFS.write(final_out_efs);
+		//								 out.write("out put done "+"<br>");
+										 out.flush();
+										 out1EFS.flush();
+										 out1EFS.close();
+									 BufferedWriter out3 = new BufferedWriter(new FileWriter(dir_path1EFS+"\\"+"B"+order_no+".txt"));
+									 out3.write(final_out_efs);
+									 out3.flush();
+									 out3.close();
+
+				//Transfering Bills as on file done
+		// updating the bpcs_transfered table about this
+		/*
+		int ikea=0;int counter12=0;//final_out_efs="";
+					for(int f=0;f<counter;f++){
+		//    			out.println("counter testing1s2345" +counter+"."+shop_order_no.elementAt(f));
+						ResultSet rs_efs_shop_paper1 = stmt.executeQuery("SELECT * FROM cs_bpcs_mat_transfered_jobs where cse_order_no like '"+order_no+"' and bpcs_shop_order_no='"+shop_order_no.elementAt(f)+"' ");
+						if (rs_efs_shop_paper1 !=null) {
+						while (rs_efs_shop_paper1.next()){
+						counter12=rs_efs_shop_paper1.getInt ("counter");
+						ikea++;
+						}
+						}
+		//    			out.println("counter testing12345" +counter+"ikea"+ikea);
+								myConn.setAutoCommit(false);
+						if(ikea>0){
+		//						myConn.setAutoCommit(false);
+		//	    			 out.println("Updating" +ikea+"<br>");
+							//Updating
+							try	{
+			//				out.println("step 1"+counter12+"<br>");
+							counter12++;
+							String insert1 ="update cs_bpcs_mat_transfered_jobs set counter=? where bpcs_shop_order_no=? and cse_order_no=? ";
+						   PreparedStatement update_mat_shop_orders1 = myConn.prepareStatement(insert1);
+							update_mat_shop_orders1.setInt(1,counter12);
+							update_mat_shop_orders1.setString(2,shop_order_no.elementAt(f).toString());
+							update_mat_shop_orders1.setString(3,order_no);
+							int rocount1 = update_mat_shop_orders1.executeUpdate();
+							update_mat_shop_orders1.close();
+				//			out.println("step 2"+counter12+"<br>"+insert1);
+							}
+							catch (java.sql.SQLException e)
+							{
+							out.println("Problem with updating the transfered jobs"+"<br>");
+							out.println("Illegal Operation try again/Report Error"+"<br>");
+							myConn.rollback();
+							out.println(e.toString());
+							return;
+							}
+
+						}//IF LOOP
+						else{
+		//						myConn.setAutoCommit(false);
+		//s	    			out.println("INsertig" +ikea);
+							// Inserting
+							try	{
+							String insert ="INSERT INTO cs_bpcs_mat_transfered_jobs(cse_order_no,bpcs_shop_order_no,transfer,counter)VALUES(?,?,?,?) ";
+						   PreparedStatement update_mat_shop_orders = myConn.prepareStatement(insert);
+							update_mat_shop_orders.setString(1,order_no);
+							update_mat_shop_orders.setString(2,shop_order_no.elementAt(f).toString());
+							update_mat_shop_orders.setString(3,"Y");
+							update_mat_shop_orders.setInt(4,1);
+							int rocount = update_mat_shop_orders.executeUpdate();
+							update_mat_shop_orders.close();
+							}
+							catch (java.sql.SQLException e)
+							{
+							out.println("Problem with inserting into trasfered jobs"+"<br>");
+							out.println("Illegal Operation try again/Report Error"+"<br>");
+							myConn.rollback();
+							out.println(e.toString());
+							return;
+							}
+							// Inserting Done
+						}//ELSE LOOP
+						ikea=0;counter12=0;//RESETTING THE COUNTER
+						//updating mat shop order tables
+							try	{
+							String insert12 ="update cs_bpcs_mat_shop_orders set transfer=? where bpcs_shop_order_no=? and cse_order_no=? ";
+						   PreparedStatement update_mat_shop_orders12 = myConn.prepareStatement(insert12);
+							update_mat_shop_orders12.setString(1,"N");
+							update_mat_shop_orders12.setString(2,shop_order_no.elementAt(f).toString());
+							update_mat_shop_orders12.setString(3,order_no);
+							int rocount12 = update_mat_shop_orders12.executeUpdate();
+							update_mat_shop_orders12.close();
+							}
+							catch (java.sql.SQLException e)
+							{
+							out.println("Problem with updating the mat job status jobs"+"<br>");
+							out.println("Illegal Operation try again/Report Error"+"<br>");
+							myConn.rollback();
+							out.println(e.toString());
+							return;
+							}
+						//updating mat shop order tables done
+
+					rs_efs_shop_paper1.close();
+
+					}// THE FOR LOOP
+		// updating the bpcs_transfered table about this Done
+					//routings data exports
+		*/
+
+					dir_pathEFS="\\\\lebhq-erusdev\\TRANSFER\\BPCS_ROU\\";final_out_efs="";
+					dir_path1EFS="\\\\lebhq-erusdev\\TRANSFER\\BPCS_ROU\\test\\";
+			//		out.println("<BR>Let's see.... OK.................<br>"+"Check the out put in "+dir_pathEFS+" for the ROU upload files"+"<br><br><br>");
+					if (counter>0){
+					String k1="";int count_rout_rows=0;String k2="";String k3="";String k4="";String k5="";String k6="";String k7="";
+					String k8="";String tv="";int counter_frame_sum=0;
+					String k9="";
+					String k10="";
+					//notes vars
+					int notes_prod_count=1;String k1_notes="";String k2_notes="";String k3_notes="";String k4_notes="";String k5_notes="";String k6_notes="";String k7_notes="";
+					String k8_notes="";String op_code="";
+						for(int ot=0;ot<counter;ot++){
+							count_rout_rows=1;counter_frame_sum=1;notes_prod_count=1;
+							for(int in=0;in<counter_rout;in++){
+							   if( (product_desc.elementAt(ot).toString().equals("product"))&(shop_item_no.elementAt(ot).toString().equals(item_no_rout.elementAt(in).toString()))&(!(block_code_rout.elementAt(in).toString().startsWith("FRAME")))&(!(block_code_rout.elementAt(in).toString().startsWith("PANS"))) ){
+		//					    out.println("The product"+item_no_rout.elementAt(in).toString());
+							    k1=bpcs_part_main_rout.elementAt(in).toString();
+							    k3=shop_order_no.elementAt(ot).toString();
+								k4=op_no_rout.elementAt(in).toString();
+								k5=op_name_rout.elementAt(in).toString();
+								k6=work_center_rout.elementAt(in).toString();
+								k7=routing_time_rout.elementAt(in).toString();
+								k8=setup_time_rout.elementAt(in).toString();
+								k9=rmove.elementAt(in).toString();
+								k10=rque.elementAt(in).toString();
+								if(k1.length()<15){	//Begin the part main for the product
+								tv="";
+								for(int v=0;v<(15-k1.length());v++){
+								tv=" "+tv;
+								}
+								k1=k1+tv;
+								}// the part main for the product done
+								if(k3.length()<6){	//Begin the shop order no
+									tv="";
+									for(int v=0;v<(6-k3.length());v++){
+									tv="0"+tv;
+									}
+									k3=k3+tv;
+								}// Shop order no done
+								if(count_rout_rows>9){k2="0"+count_rout_rows;}else{k2="00"+count_rout_rows;}//the couner variable
+								k4=k4.substring(0,(k4.length())-3 );//the op_no
+		//						out.println("the opno"+k4+"<br>");
+								if(k4.length()>1){k4="0"+k4;}else{k4="00"+k4;}//the op_no
+								if(k5.length()<30){// the op_name
+								tv="";
+								for(int v=0;v<(30-k5.length());v++){
+								tv=" "+tv;
+								}
+								k5=k5+tv;
+								}// the op_name
+								if(k6.length()<6){// the work_center
+								tv="";
+								for(int v=0;v<(6-k6.length());v++){
+								tv="0"+tv;
+								}
+								k6=tv+k6;
+								}// the  work_center
+
+								if(new Double(k7).doubleValue()>0){
+		//							out.println("The product"+k7+"::"+qty.elementAt(ot).toString());
+								k7=for13EFS.format((new Double(qty.elementAt(ot).toString()).doubleValue())/(new Double(k7).doubleValue()));
+								}else{
+									k7=k7+"0";
+								}
+								String rEFS="";
+								    for (int i = 0; i < k7.length(); i ++) {
+									    //if (k7.charAt(i) != '.') rEFS += k7.charAt(i);
+									    if (k7.charAt(i) != '.' && k7.charAt(i) != ',') rEFS += k7.charAt(i);
+								}
+		//							out.println("The product"+k7+"::"+qty.elementAt(ot).toString()+"<br>");
+								k7=r;
+						//		k7=k7+"0";
+								if(k7.length()<8){// the the  routings time
+								tv="";
+								for(int v=0;v<(8-k7.length());v++){
+								tv="0"+tv;
+								}
+								k7=tv+k7;
+								}// the  routings time
+								String r1="";
+								    for (int i = 0; i < k8.length(); i ++) {
+									    if (k8.charAt(i) != '.') r1 += k8.charAt(i);
+								}
+								k8=r1;
+								k8=k8+"0";
+								if(k8.length()<8){// the  setup time
+								tv="";
+								for(int v=0;v<(8-k8.length());v++){
+								tv="0"+tv;
+								}
+								k8=tv+k8;
+								}// the setup time
+
+
+								r1="";
+								for (int i = 0; i < k9.length(); i ++) {
+									if (k9.charAt(i) != '.') r1 += k9.charAt(i);
+								}
+								k9=r1;
+								//k9=k9+"0";
+								if(k9.length()<6){// the  setup time
+									tv="";
+									for(int v=0;v<(6-k9.length());v++){
+										tv="0"+tv;
+									}
+									k9=tv+k9;
+								}
+								r1="";
+//out.println(k10+"<BR>");
+								for (int i = 0; i < k10.length(); i ++) {
+									if (k10.charAt(i) != '.') r1 += k10.charAt(i);
+								}
+								k10=r1;
+//out.println(k10+"<BR>");
+								//k9=k9+"0";
+								if(k10.length()<6){// the  setup time
+									tv="";
+									for(int v=0;v<(6-k10.length());v++){
+										tv="0"+tv;
+									}
+									k10=tv+k10;
+								}
+
+//out.println(k10+"<BR><BR>");
+
+
+
+
+
+
+
+								String erapid_line_no=seq_no.elementAt(ot).toString();
+								//line no's
+								if(erapid_line_no.length()<3){
+									String tv1="";
+									for(int v=0;v<(3-erapid_line_no.length());v++){
+									tv1=tv1+"0";
+								    }
+									erapid_line_no=tv1+erapid_line_no;
+								}
+
+								try {// try block starts
+								op_code=op_no_rout.elementAt(in).toString();
+								op_code=op_code.substring(0,(op_code.length())-3 );
+								ResultSet rs_routing_notes = stmt.executeQuery("SELECT * FROM cs_routing_notes where category = 'PROD' and op_code='"+op_code+"'  ");
+									if (rs_routing_notes !=null) {
+										while (rs_routing_notes.next()){
+										if(notes_prod_count>9){k2_notes="0"+notes_prod_count;}else{k2_notes="00"+notes_prod_count;}
+										String notes_3=rs_routing_notes.getString(3);
+										String notes_4=rs_routing_notes.getString(4);
+										if(notes_4.length()<4){// the seq_no for the notes
+										tv="";
+										for(int v=0;v<(4-notes_4.length());v++){
+										tv="0"+tv;
+										}
+										notes_4=tv+notes_4;
+										}//the seq_no for the notes
+										String notes_5=rs_routing_notes.getString(5);
+										if(notes_5.length()<50){// the notes	desc
+										tv="";
+										for(int v=0;v<(50-notes_5.length());v++){
+										tv=" "+tv;
+										}
+										notes_5=notes_5+tv;
+										}// the notes	desc
+										String notes_6=rs_routing_notes.getString(6);
+										String notes_7=rs_routing_notes.getString(7);
+		//								out.println("th value"+k4+"::"+notes_3+"<br>");
+										StringTokenizer stEFS = new StringTokenizer(notes_3,",");
+											while (stEFS.hasMoreTokens()) {
+												String tss=stEFS.nextToken();
+												 if(bpcs_part_main_rout.elementAt(in).toString().startsWith(tss)){
+													notes_prod_count++;
+		//									        out.println("N"+k1+k2_notes+k3+k4+notes_4+notes_5+notes_6+notes_7+"MU   "+"<br>");
+													final_notes_out_efs=final_notes_out_efs+"N"+k1+k2_notes+k3+k4+notes_4+notes_5+notes_6+notes_7+"MU"+order_no+erapid_line_no+"  "+"\r\n";
+												 }
+											}//while
+										notes_6="";notes_7="";k2_notes="";notes_4="";
+										}
+									}
+								rs_routing_notes.close();
+								}// try block ends
+								catch(java.sql.SQLException e){
+								out.println("Problem with inserting into traNsfered jobs"+"<br>");
+								out.println("Illegal Operation try again/Report Error"+"<br>");
+								myConn.rollback();
+								out.println(e.toString());
+								return;
+								}//catch block
+								//final_out_efs=final_out_efs+"R"+k1+k2+k3+k4+k5+k6+"P"+k7+k8+"MU"+"   "+order_no+erapid_line_no+"00000000"+"000"+"000000"+"000000"+"0000000"+"000"+"  "+"  1"+"000000000000000"+"\r\n";
+							   final_out_efs=final_out_efs+"R"+k1+k2+k3+k4+k5+k6+"P"+k7+k8+"MU"+"   "+order_no+erapid_line_no+"00000000"+"000"+k9+k10+"0000000"+"000"+"  "+"  1"+"000000000000000"+"\r\n";
+							   count_rout_rows++;
+							   }// if looop FOR THE PRODUCT
+							   if( (product_desc.elementAt(ot).toString().equals("pan"))&(shop_item_no.elementAt(ot).toString().equals(item_no_rout.elementAt(in).toString()))&((block_code_rout.elementAt(in).toString().startsWith("PANS"))) ){
+		//					   out.println("The pan");
+								// PAN SECTION
+							    k1=bpcs_part_sub_rout.elementAt(in).toString();
+							    k3=shop_order_no.elementAt(ot).toString();
+								k4=op_no_rout.elementAt(in).toString();
+								k5=op_name_rout.elementAt(in).toString();
+								k6=work_center_rout.elementAt(in).toString();
+								k7=routing_time_rout.elementAt(in).toString();
+								k8=setup_time_rout.elementAt(in).toString();
+k9=rmove.elementAt(in).toString();
+								k10=rque.elementAt(in).toString();
+								if(k1.length()<15){	//Begin the part main for the product
+								tv="";
+								for(int v=0;v<(15-k1.length());v++){
+								tv=" "+tv;
+								}
+								k1=k1+tv;
+								}// the part main for the product done
+								if(k3.length()<6){	//Begin the shop order no
+									tv="";
+									for(int v=0;v<(6-k3.length());v++){
+									tv="0"+tv;
+									}
+									k3=k3+tv;
+								}// Shop order no done
+								if(count_rout_rows>9){k2="0"+count_rout_rows;}else{k2="00"+count_rout_rows;}//the couner variable
+								k4=k4.substring(0,(k4.length())-3 );//the op_no
+								if(k4.length()>1){k4="0"+k4;}else{k4="00"+k4;}//the op_no
+								if(k5.length()<30){// the op_name
+								tv="";
+								for(int v=0;v<(30-k5.length());v++){
+								tv=" "+tv;
+								}
+								k5=k5+tv;
+								}// the op_name
+								if(k6.length()<6){// the work_center
+								tv="";
+								for(int v=0;v<(6-k6.length());v++){
+								tv="0"+tv;
+								}
+								k6=tv+k6;
+								}// the  work_center
+								//k7=for13EFS.format((new Double(k7).doubleValue())/(new Double(qty.elementAt(ot).toString()).doubleValue()));
+						//		k7=for13EFS.format((new Double(qty.elementAt(ot).toString()).doubleValue())/(new Double(k7).doubleValue()));
+								if(new Double(k7).doubleValue()>0){
+								k7=for13EFS.format((new Double(qty.elementAt(ot).toString()).doubleValue())/(new Double(k7).doubleValue()));
+								}else{
+									k7=k7+"0";
+								}
+								String rEFS="";
+								    for (int i = 0; i < k7.length(); i ++) {
+									    //if (k7.charAt(i) != '.') rEFS += k7.charAt(i);
+									    if (k7.charAt(i) != '.' && k7.charAt(i) != ',') rEFS += k7.charAt(i);
+								}
+								k7=r;
+							//	k7=k7+"0";
+		//						out.println("The pan"+k7+"<br>");
+								if(k7.length()<8){// the the  routings time
+								tv="";
+								for(int v=0;v<(8-k7.length());v++){
+								tv="0"+tv;
+								}
+								k7=tv+k7;
+								}// the  routings time
+								String r1="";
+								    for (int i = 0; i < k8.length(); i ++) {
+									    if (k8.charAt(i) != '.') r1 += k8.charAt(i);
+								}
+								k8=r1;
+								k8=k8+"0";
+								if(k8.length()<8){// the  setup time
+								tv="";
+								for(int v=0;v<(8-k8.length());v++){
+								tv="0"+tv;
+								}
+								k8=tv+k8;
+								}// the setup time
+								//line no's
+
+
+								r1="";
+								for (int i = 0; i < k9.length(); i ++) {
+									if (k9.charAt(i) != '.') r1 += k9.charAt(i);
+								}
+								k9=r1;
+								//k9=k9+"0";
+								if(k9.length()<6){// the  setup time
+									tv="";
+									for(int v=0;v<(6-k9.length());v++){
+										tv="0"+tv;
+									}
+									k9=tv+k9;
+								}
+								r1="";
+								for (int i = 0; i < k10.length(); i ++) {
+									if (k10.charAt(i) != '.') r1 += k10.charAt(i);
+								}
+								k10=r1;
+								//k9=k9+"0";
+								if(k10.length()<6){// the  setup time
+									tv="";
+									for(int v=0;v<(6-k10.length());v++){
+										tv="0"+tv;
+									}
+									k10=tv+k10;
+								}
+
+
+								String erapid_line_no=seq_no.elementAt(ot).toString();
+								if(erapid_line_no.length()<3){
+									String tv2="";
+									for(int v=0;v<(3-erapid_line_no.length());v++){
+									tv2=tv2+"0";
+								    }
+									erapid_line_no=tv2+erapid_line_no;
+								}
+											try {// try block starts
+											op_code=op_no_rout.elementAt(in).toString();
+											op_code=op_code.substring(0,(op_code.length())-3 );
+											ResultSet rs_routing_notes = stmt.executeQuery("SELECT * FROM cs_routing_notes where category = 'PAN' and op_code='"+op_code+"'  ");
+												if (rs_routing_notes !=null) {
+													while (rs_routing_notes.next()){
+													if(notes_prod_count>9){k2_notes="0"+notes_prod_count;}else{k2_notes="00"+notes_prod_count;}
+													String notes_3=rs_routing_notes.getString(3);
+													String notes_4=rs_routing_notes.getString(4);
+													if(notes_4.length()<4){// the seq_no for the notes
+													tv="";
+													for(int v=0;v<(4-notes_4.length());v++){
+													tv="0"+tv;
+													}
+													notes_4=tv+notes_4;
+													}//the seq_no for the notes
+													String notes_5=rs_routing_notes.getString(5);
+													if(notes_5.length()<50){// the notes	desc
+													tv="";
+													for(int v=0;v<(50-notes_5.length());v++){
+													tv=" "+tv;
+													}
+													notes_5=notes_5+tv;
+													}// the notes	desc
+													String notes_6=rs_routing_notes.getString(6);
+													String notes_7=rs_routing_notes.getString(7);
+					//								out.println("th value"+k4+"::"+notes_3+"<br>");
+													StringTokenizer stEFS = new StringTokenizer(notes_3,",");
+														while (stEFS.hasMoreTokens()) {
+															String tss=stEFS.nextToken();
+															 if(bpcs_part_sub_rout.elementAt(in).toString().startsWith(tss)){
+																notes_prod_count++;
+		//												        out.println("N"+k1+k2_notes+k3+k4+notes_4+notes_5+notes_6+notes_7+"MU   "+"<br>");
+																final_notes_out_efs=final_notes_out_efs+"N"+k1+k2_notes+k3+k4+notes_4+notes_5+notes_6+notes_7+"MU"+order_no+erapid_line_no+"  "+"\r\n";
+															 }
+														}//while
+													notes_6="";notes_7="";k2_notes="";notes_4="";
+													}
+												}
+											rs_routing_notes.close();
+											}// try block ends
+											catch(java.sql.SQLException e){
+											out.println("Problem with inserting into traNsfered jobs"+"<br>");
+											out.println("Illegal Operation try again/Report Error"+"<br>");
+											myConn.rollback();
+											out.println(e.toString());
+											return;
+											}//catch block
+							   //final_out_efs=final_out_efs+"R"+k1+k2+k3+k4+k5+k6+"P"+k7+k8+"MU"+"   "+order_no+erapid_line_no+"00000000"+"000"+"000000"+"000000"+"0000000"+"000"+"  "+"  1"+"000000000000000"+"\r\n";
+							   final_out_efs=final_out_efs+"R"+k1+k2+k3+k4+k5+k6+"P"+k7+k8+"MU"+"   "+order_no+erapid_line_no+"00000000"+"000"+k9+k10+"0000000"+"000"+"  "+"  1"+"000000000000000"+"\r\n";
+							   count_rout_rows++;
+								//PAN SECTION END
+							   }// if looop FOR THE PAN
+							  k1="";k2="";k3="";k4="";k5="";k6="";k7="";k8="";k9="";k10="";tv="";
+							}// the inner loop
+		//frames special section grouping
+							   if( (product_desc.elementAt(ot).toString().equals("frame")) ){
+								for(int im=0;im<bpcs_part_sub_sum.size();im++){
+									  if ((bpcs_part_sub_sum.elementAt(im).toString().equals(part_sub.elementAt(ot).toString()))){//inner if loop
+									    k1=bpcs_part_sub_sum.elementAt(im).toString();
+									    k3=shop_order_no.elementAt(ot).toString();
+										k4=op_no_sum.elementAt(im).toString();
+										k5=op_name_sum.elementAt(im).toString();
+										k6=work_center_sum.elementAt(im).toString();
+										k7=routing_time_sum.elementAt(im).toString();
+										k8=setup_time_sum.elementAt(im).toString();
+										k9=rmove_sum.elementAt(im).toString();
+										k10=rque_sum.elementAt(im).toString();
+		//								out.println("THe values"+k1+":"+k2+":"+k3+":"+k4+":"+k5+":"+k6+":"+k7+":"+k8+":");
+		// 							      out.println(i+"The frame"+bpcs_part_sub_sum.size()+" ipartsub:"+part_sub.elementAt(ot).toString()+":part group"+bpcs_part_sub_sum.elementAt(i).toString()+"<br>");
+										//the function code
+											if(k1.length()<15){	//Begin the part main for the product
+											tv="";
+											for(int v=0;v<(15-k1.length());v++){
+											tv=" "+tv;
+											}
+											k1=k1+tv;
+											}// the part main for the product done
+											if(k3.length()<6){	//Begin the shop order no
+												tv="";
+												for(int v=0;v<(6-k3.length());v++){
+												tv="0"+tv;
+												}
+												k3=k3+tv;
+											}// Shop order no done
+											if(counter_frame_sum>9){k2="0"+counter_frame_sum;}else{k2="00"+counter_frame_sum;}//the couner variable
+											k4=k4.substring(0,(k4.length())-3 );//the op_no
+											if(k4.length()>1){k4="0"+k4;}else{k4="00"+k4;}//the op_no
+											if(k5.length()<30){// the op_name
+											tv="";
+											for(int v=0;v<(30-k5.length());v++){
+											tv=" "+tv;
+											}
+											k5=k5+tv;
+											}// the op_name
+											if(k6.length()<6){// the work_center
+											tv="";
+											for(int v=0;v<(6-k6.length());v++){
+											tv="0"+tv;
+											}
+											k6=tv+k6;
+											}// the  work_center
+		//									k7=for13EFS.format((new Double(k7).doubleValue())/(new Double(qty.elementAt(ot).toString()).doubleValue()));
+		//									k7=for13EFS.format((new Double(qty.elementAt(ot).toString()).doubleValue())/(new Double(k7).doubleValue()));
+											if(new Double(k7).doubleValue()>0){
+											k7=for13EFS.format((new Double(qty.elementAt(ot).toString()).doubleValue())/(new Double(k7).doubleValue()));
+											}else{
+												k7=k7+"0";
+											}
+											String rEFS="";
+											    for (int i = 0; i < k7.length(); i ++) {
+		//										    if (k7.charAt(i) != '.') rEFS += k7.charAt(i);
+												    if (k7.charAt(i) != '.' && k7.charAt(i) != ',') rEFS += k7.charAt(i);
+											}
+											k7=rEFS;
+										//	k7=k7+"0";
+		//									out.println("The frame"+k7+"<br>");
+											if(k7.length()<8){// the the  routings time
+											tv="";
+											for(int v=0;v<(8-k7.length());v++){
+											tv="0"+tv;
+											}
+											k7=tv+k7;
+											}// the  routings time
+											String r1="";
+											    for (int i = 0; i < k8.length(); i ++) {
+												    if (k8.charAt(i) != '.') r1 += k8.charAt(i);
+											}
+											k8=r1;
+											k8=k8+"0";
+											if(k8.length()<8){// the  setup time
+											tv="";
+											for(int v=0;v<(8-k8.length());v++){
+											tv="0"+tv;
+											}
+											k8=tv+k8;
+											}// the setup time
+											String erapid_line_no=seq_no.elementAt(ot).toString();
+											if(erapid_line_no.length()<3){
+												String tv3="";
+												for(int v=0;v<(3-erapid_line_no.length());v++){
+												tv3=tv3+"0";
+											    }
+												erapid_line_no=tv3+erapid_line_no;
+											}
+
+											r1="";
+											for (int i = 0; i < k9.length(); i ++) {
+												if (k9.charAt(i) != '.') r1 += k9.charAt(i);
+											}
+											k9=r1;
+											//k9=k9+"0";
+											if(k9.length()<6){// the  setup time
+												tv="";
+												for(int v=0;v<(6-k9.length());v++){
+													tv="0"+tv;
+												}
+												k9=tv+k9;
+											}
+											r1="";
+											for (int i = 0; i < k10.length(); i ++) {
+												if (k10.charAt(i) != '.') r1 += k10.charAt(i);
+											}
+											k10=r1;
+											//k9=k9+"0";
+											if(k10.length()<6){// the  setup time
+												tv="";
+												for(int v=0;v<(6-k10.length());v++){
+													tv="0"+tv;
+												}
+												k10=tv+k10;
+											}
+											// getting notes
+													try {// try block starts
+													op_code=op_no_sum.elementAt(im).toString();
+													op_code=op_code.substring(0,(op_code.length())-3 );
+													ResultSet rs_routing_notes = stmt.executeQuery("SELECT * FROM cs_routing_notes where category = 'FRAME' and op_code='"+op_code+"'  ");
+														if (rs_routing_notes !=null) {
+															while (rs_routing_notes.next()){
+															if(notes_prod_count>9){k2_notes="0"+notes_prod_count;}else{k2_notes="00"+notes_prod_count;}
+															String notes_3=rs_routing_notes.getString(3);
+															String notes_4=rs_routing_notes.getString(4);
+															if(notes_4.length()<4){// the seq_no for the notes
+															tv="";
+															for(int v=0;v<(4-notes_4.length());v++){
+															tv="0"+tv;
+															}
+															notes_4=tv+notes_4;
+															}//the seq_no for the notes
+															String notes_5=rs_routing_notes.getString(5);
+															if(notes_5.length()<50){// the notes	desc
+															tv="";
+															for(int v=0;v<(50-notes_5.length());v++){
+															tv=" "+tv;
+															}
+															notes_5=notes_5+tv;
+															}// the notes	desc
+															String notes_6=rs_routing_notes.getString(6);
+															String notes_7=rs_routing_notes.getString(7);
+							//								out.println("th value"+k4+"::"+notes_3+"<br>");
+															StringTokenizer stEFS = new StringTokenizer(notes_3,",");
+																while (stEFS.hasMoreTokens()) {
+																	String tss=stEFS.nextToken();
+																	 if(bpcs_part_sub_sum.elementAt(im).toString().startsWith(tss)){
+																		notes_prod_count++;
+		//														        out.println("N"+k1+k2_notes+k3+k4+notes_4+notes_5+notes_6+notes_7+"MU   "+"<br>");
+																		final_notes_out_efs=final_notes_out_efs+"N"+k1+k2_notes+k3+k4+notes_4+notes_5+notes_6+notes_7+"MU"+order_no+erapid_line_no+"  "+"\r\n";
+																	 }
+																}//while
+															notes_6="";notes_7="";k2_notes="";notes_4="";
+															}
+														}
+													rs_routing_notes.close();
+													}// try block ends
+													catch(java.sql.SQLException e){
+													out.println("Problem with inserting into trasfered jobs"+"<br>");
+													out.println("Illegal Operation try again/Report Error"+"<br>");
+													myConn.rollback();
+													out.println(e.toString());
+													return;
+													}//catch block
+											//getting notes done
+										   //final_out_efs=final_out_efs+"R"+k1+k2+k3+k4+k5+k6+"P"+k7+k8+"MU"+"   "+order_no+erapid_line_no+"00000000"+"000"+"000000"+"000000"+"0000000"+"000"+"  "+"  1"+"000000000000000"+"\r\n";
+										   final_out_efs=final_out_efs+"R"+k1+k2+k3+k4+k5+k6+"P"+k7+k8+"MU"+"   "+order_no+erapid_line_no+"00000000"+"000"+k9+k10+"0000000"+"000"+"  "+"  1"+"000000000000000"+"\r\n";
+										// the function code ends
+									  }// inner if loops ends
+									  k1="";k2="";k3="";k4="";k5="";k6="";k7="";k8="";k9="";k10="";counter_frame_sum++;tv="";
+								 }
+							   }//frames special section grouping ends
+
+						}// the outer loop
+						//Routing text file transfer for the order
+								BufferedWriter out2EFS = new BufferedWriter(new FileWriter(dir_pathEFS+"\\"+"R"+order_no+".txt"));
+								out2EFS.write(final_out_efs);
+								out2EFS.write(final_notes_out_efs);
+								// out.write("out put done "+"<br>");
+								out.flush();
+								out2EFS.flush();
+								out2EFS.close();
+												 BufferedWriter out4 = new BufferedWriter(new FileWriter(dir_path1EFS+"\\"+"R"+order_no+".txt"));
+												 out4.write(final_out_efs);
+												 out4.flush();
+												 out4.close();
+
+						//Routing text file transfer for the order done
+
+					}// the if loop
+					else{
+					out.println("There are no Shop orders ready for BPCS/ROU Export<br>");
+					}// the else loop
+
+					//routings data exports done
+					//closing the connection
+					stmt.close();
+					rs_find.close();
+					rs_cs_materials_output1.close();
+					rs_cs_routings_output1.close();
+					rs_cs_routings_sum.close();
+					//myConn.commit();
+					myConn.close();
+		out.println("Order transfer complete.");
+		 }
+		  catch(Exception e){
+		  out.println(e);
+		  }
+
+		%>
+
+	</body>
+</html>
+

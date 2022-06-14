@@ -1,0 +1,2 @@
+UPDATE ::A00000_00::order no 183942::bpcs order no20150820:: bpcs order dateWON:: bpcs status 
+BPCS Total::174::SFDC updated::1::Erapid Exception::0::20150820
